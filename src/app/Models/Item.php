@@ -24,6 +24,16 @@ class Item extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    } 
+
+    public function likedItems()
+    {
+        return $this->belongsToMany(User::class, 'likes')->withTimestamps();
+    }
+
     protected $fillable = [
         'user_id',
         'title',

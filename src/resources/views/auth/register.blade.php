@@ -2,33 +2,40 @@
 
 @section('content')
 
-<h2>会員登録ページページ</h2>
+@if ($errors->any())
+    <div class="error__msg">
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
 
-<form method="POST" action="{{ route('register') }}">
-    @csrf
-    <div>
-        <label for="name">ユーザー名</label>
-        <input type="text" name="name" required>
-    </div>
-    <div>
-        <label for="email">メールアドレス</label>
-        <input type="email" name="email" required>
-    </div>
-    <div>
-        <label for="password">パスワード</label>
-        <input type="password" name="password" required>
-    </div>
-    <div>
-        <label for="password">確認パスワード</label>
-        <input type="password" name="password_confirmation" required>
-    </div>
-    <div>
-        <button type="submit">登録する</button>
-    </div>
-</form>
+<div class="input__form">
+    <h2>会員登録</h2>
+    <form method="POST" action="{{ route('register') }}">
+        @csrf
 
-<div>
-    <a href="{{ route('login') }}">ログインはこちら</a>
+        <div class="form__group">
+            <label for="name">ユーザー</label>
+            <input type="text" name="name" value="{{ old('name') }}">
+        </div>
+        <div class="form__group">
+            <label for="email">メールアドレス</label>
+            <input type="email" name="email" value="{{ old('email') }}">
+        </div>
+        <div class="form__group">
+            <label for="password">パスワード</label>
+            <input type="password" name="password">
+        </div>
+        <div class="form__group">
+            <label for="password">確認パスワード</label>
+            <input type="password" name="password_confirmation">
+        </div>
+        <div class="form__btn">
+            <button type="submit">登録</button>
+        </div>
+    </form>
+    <a href="{{ route('login') }}" class="other__btn">ログインはこちら</a>
 </div>
 
 @endsection

@@ -1,0 +1,31 @@
+.tab__btns {
+    display: felx;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab__btn {
+    padding: 10px 20px;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+}
+
+.tab__btn.active {
+    background: #999;
+    color: #d00;
+}
+
+.tab__content.hidden {
+    display: none;
+}
+
+
+
+
+/* 
+*{
+    border: 1px dashed lime;
+}
+
+*

@@ -14,6 +14,8 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Fortify\Fortify;
 
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -22,7 +24,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        
     }
 
     /**
@@ -30,6 +32,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        
         $this->app->singleton(
             \Laravel\Fortify\Contracts\CreatesNewUsers::class,
             \App\Actions\Fortify\CreateNewUser::class
@@ -48,9 +51,7 @@ class FortifyServiceProvider extends ServiceProvider
     
             return Limit::perMinute(10)->by($email . $request->ip());
         });
-
-
-
+        
         $this->app->singleton(RegisterResponse::class, function () {
             return new class implements RegisterResponse {
                 public function toResponse($request): RedirectResponse
@@ -59,15 +60,23 @@ class FortifyServiceProvider extends ServiceProvider
                 }
             };
         });
-    
+        
         $this->app->singleton(LoginResponse::class, function () {
             return new class implements LoginResponse {
                 public function toResponse($request): RedirectResponse
                 {
+                    //dd('LoginResponse fired!!!');  <-これが効かない
+                    //ログイン時にには一覧飛ばすようにしたいができない
+                    $request->user()->load('profile');
                     return redirect('/');
                 }
             };
         });
 
+        Fortify::registerView(fn () => view('auth.register'));
+
+        Event::listen(Registered::class, function ($event) {
+            session(['just_registered' => true]);
+        });
     }
 }

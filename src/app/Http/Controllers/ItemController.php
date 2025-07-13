@@ -5,13 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\Profile;
+use App\Models\Purchase;
+use App\Http\Requests\SellItemRequest;
 
 class ItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = Item::all();
-        return view('index', compact('items'));
+        $query = Item::query();
+    
+        if ($request->filled('keyword')) {
+            $query->where('title', 'like', '%' . $request->keyword . '%');
+        }
+    
+        if ($request->filled('category_id')) {
+            $categoryId = $request->category_id;
+
+            $query->whereHas('categories', function($q) use ($categoryId) {
+                $q->where('categories.id', $categoryId);
+            });
+        }
+    
+        $items = $query->get();
+        $categories = Category::all();
+        
+        $likedItems = auth()->check() ? auth()->user()->likedItems : collect();
+
+        return view('index', compact('items', 'categories', 'likedItems'));
+        // 事項：挙動コードの確認を行う
     }
 
     public function show($id)
@@ -26,17 +48,9 @@ class ItemController extends Controller
         return view('sell', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(SellItemRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'price' => 'required|integer|min:0',
-            'condition' => 'required',
-            'brand' => 'nullable|string|max:255',
-            'description' => 'required',
-            'image' => 'required|image|mimes:jpg,jpeg,jpe,png|max:2048',
-        ]);
-
+        $validated = $request->validated();
         $imagePath = $request->file('image')->store('images', 'public');
 
         $item = Item::create([
