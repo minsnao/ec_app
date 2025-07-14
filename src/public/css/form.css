@@ -13,6 +13,11 @@
     padding: 10px 20px;
 }
 
+.form__group__category {
+    width: 500px;
+    padding: 10px 20px;
+}
+
 .form__group input {
     width: 500px;
     height: 40px;

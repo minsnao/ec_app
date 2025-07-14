@@ -32,18 +32,21 @@ class ItemController extends Controller
         
         $likedItems = auth()->check() ? auth()->user()->likedItems : collect();
 
-        return view('index', compact('items', 'categories', 'likedItems'));
+        $user = auth()->user(); 
+
+        return view('index', compact('items', 'categories', 'likedItems', 'user'));
         // 事項：挙動コードの確認を行う
     }
 
     public function show($id)
     {
         $item = Item::findOrFail($id);
-        return view('detail', compact('item'));
+        return view('detail', compact('item',));
     }
 
     public function create()
     {
+        
         $categories = Category::all();
         return view('sell', compact('categories'));
     }

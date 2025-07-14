@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('content')
 
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <script>
     const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
     document.addEventListener('DOMContentLoaded', function () {
@@ -30,6 +34,13 @@
     });
 </script>
 
+@auth
+<a href="{{ url('mypage') }}"><button>mypageへ</button></a>
+<br>
+<p>{{ $user->name }}</p>
+<img src="{{ asset('storage/' . $user->avatar) }}" alt="プロフィール画像" width="100">
+@endauth
+
 <div class="tab__container">
     <div class="tab__btns">
         <button class="tab__btn active" data-tab="recommend">おすすめ</button>
@@ -40,7 +51,7 @@
         @foreach ($items as $item)
             <div>
                 <a href="{{ url('/item/' . $item->id) }}">
-                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" width="150" style="{{ $item->is_sold ? 'opacity: 0.5;' : '' }}">
+                    <img src="{{ Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image) }}" width="150" style="{{ $item->is_sold ? 'opacity: 0.5;' : '' }}">
                     <td>{{ $item->title }} / </td>
                     <td>¥{{ $item->price }}</td>
                 </a>
@@ -70,7 +81,7 @@
         @else
         <div>
             <a href="{{ url('/item/' . $item->id) }}">
-                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" width="150" style="{{ $item->is_sold ? 'opacity: 0.5;' : '' }}">
+                <img src="{{ Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image) }}" alt="{{ $item->name }}" width="150" style="{{ $item->is_sold ? 'opacity: 0.5;' : '' }}">
                 <td>{{ $item->title }} / </td>
                 <td>¥{{ $item->price }}</td>
             </a>

@@ -4,10 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Item extends Model
 {
     use HasFactory;
+
+    public function getImageUrlAttribute()
+{
+    return Str::startsWith($this->image, 'http')
+        ? $this->image
+        : asset('storage/' . $this->image);
+}
 
     public function user() 
     {

@@ -13,14 +13,38 @@
 <div class="input__form">
     <h2>商品の出品</h2>
     <form action="{{ url('/sell') }}" method="POST" enctype="multipart/form-data">
+        @csrf
         <div class="form__group">
             <label for="image">商品の画像</label>
-            <input type="file" name="image">
-            <!-- ココにイメージプレビュースクリプト -->
+            <div>
+                <input type="file" name="image" id="imageInput">
+                <img id="imagePreview" src="" alt="画像プレビュー" style="display:none; width:100px; margin-top:10px;">
+                <script>
+                    document.getElementById('imageInput').addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        const preview = document.getElementById('imagePreview');
+                        const currentImage = document.getElementById('currentImage');
+
+                        if (file && file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+
+                            reader.onload = function(e) {
+                                preview.src = e.target.result;
+                                preview.style.display = 'block';  // プレビュー画像を表示
+                                if(currentImage) currentImage.style.display = 'none'; // 元の画像を非表示に
+                            };
+
+                            reader.readAsDataURL(file);
+                        } else {
+                            preview.src = '';
+                            preview.style.display = 'none';
+                            if(currentImage) currentImage.style.display = 'block';
+                        }
+                    });
+                </script>
+            </div>
         </div>
         <br>
-
-        <!-- cssにクラスを充てるようにする： 現在なぜか適用できない -->
         <div class="form__group">
             <div style="border-bottom: 1px solid gray; padding-bottom: none; margin-bottom: 5px;">
                 <h2>商品の詳細</h2>
@@ -28,10 +52,11 @@
         </div>
         
         <!-- checkboxの大きさ揃える -->
-        <div class="form__group">
+        <div class="form__group__category">
             <label for="categories">カテゴリー</label>
             @foreach($categories as $category)
-                <input type="checkbox" name="categories[]" value="{{ $category->id }}" {{ is_array(old('categories')) && in_array($category->id, old('categories')) ? 'checked' : '' }}>{{ $category->name }}
+                {{ $category->name }}
+                <input type="checkbox" name="categories[]" value="{{ $category->id }}" {{ is_array(old('categories')) && in_array($category->id, old('categories')) ? 'checked' : '' }}>
             @endforeach
         </div>
 

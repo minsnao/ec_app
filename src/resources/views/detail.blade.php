@@ -1,10 +1,18 @@
 @extends('layouts.app')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
+@endsection
+
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 @section('content')
 
 <div>
     <h1>{{ $item->title }}</h1>
-    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" width="300"><br>
+    <img src="{{ Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image) }}" alt="{{ $item->title }}" width="300"><br>
     @auth
     <form method="POST"  action="/item/{{ $item->id }}/like" style="display: inline;">
         @csrf
@@ -14,7 +22,7 @@
         <p>いいね数: {{ $item->likedItems->count() }}</p>
     </form>
     @endauth    
-    <p>価格: ¥{{ $item->price }}</p>
+    <p class="pppp">価格: ¥{{ $item->price }}</p>
     <p>状態: {{ $item->condition }}</p>
     <p>ブランド: {{ $item->brand }}</p>
     <p>説明: {{ $item->description }}</p>

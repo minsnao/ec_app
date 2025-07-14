@@ -1,12 +1,20 @@
 @extends('layouts.app')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/purchase.css') }}">
+@endsection
+
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 @section('content')
 
 <div>
-    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
+    <img src="{{ Str::startsWith($item->image, 'http') ? $item->image : asset('storage/' . $item->image) }}" alt="{{ $item->title }}">
     <div>
         <h2>{{ $item->title }}</h2>
-        <p>￥{{ number_format($item->price) }}</p>
+        <p class="pppp">￥{{ number_format($item->price) }}</p>
     </div>
 </div>
 <p>----------------------------------</p>

@@ -16,43 +16,38 @@
     <form action="{{ url('/mypage/profile') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
-
-        <!-- 残り画像の処理を行う -->
         <div>
-            <div>
-                @if($user->avatar)
-                <img src="{{ asset('storage/' . $user->avatar) }}" alt="プロフィール画像" width="100">
-                @else
-                <p>画像は未登録です</p>
-                @endif
-                <input type="file" name="avatar" id="avatarInput">
-                <img id="avatarPreview" src="" alt="画像プレビュー" style="display:none; width:100px; margin-top:10px;">
-                <script>
-                    document.getElementById('avatarInput').addEventListener('change', function(event) {
-                        const file = event.target.files[0];
-                        const preview = document.getElementById('avatarPreview');
-                        const currentAvatar = document.getElementById('currentAvatar');
+            @if($user->avatar)
+            <img src="{{ asset('storage/' . $user->avatar) }}" alt="プロフィール画像" width="100" id="currentAvatar">
+            @else
+            <p>画像は未登録です</p>
+            @endif
+            <input type="file" name="avatar" id="avatarInput">
+            <img id="avatarPreview" src="" alt="画像プレビュー" style="display:none; width:100px; margin-top:10px;">
+            <script>
+                document.getElementById('avatarInput').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    const preview = document.getElementById('avatarPreview');
+                    const currentAvatar = document.getElementById('currentAvatar');
 
-                        if (file && file.type.startsWith('image/')) {
-                            const reader = new FileReader();
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
 
-                            reader.onload = function(e) {
-                                preview.src = e.target.result;
-                                preview.style.display = 'block';  // プレビュー画像を表示
-                                if(currentAvatar) currentAvatar.style.display = 'none'; // 元の画像を非表示に
-                            };
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';  // プレビュー画像を表示
+                            if(currentAvatar) currentAvatar.style.display = 'none'; // 元の画像を非表示に
+                        };
 
-                            reader.readAsDataURL(file);
-                        } else {
-                            preview.src = '';
-                            preview.style.display = 'none';
-                            if(currentAvatar) currentAvatar.style.display = 'block';
-                        }
-                    });
-                </script>
-            </div>
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.src = '';
+                        preview.style.display = 'none';
+                        if(currentAvatar) currentAvatar.style.display = 'block';
+                    }
+                });
+            </script>
         </div>
-        <!-- ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ -->
 
         <div class="form__group">
             <label for="name">ユーザー</label>

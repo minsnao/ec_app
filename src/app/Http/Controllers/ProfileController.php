@@ -13,13 +13,14 @@ class ProfileController extends Controller
 {
     public function show()
     {
+        $item = Item::first();
         $user = auth()->user();
         $itemsForSale = $user->items()->get();
 
         $purchasedItems = Item::whereHas('purchases', function($query) use ($user){
             $query->where('user_id', $user->id);
         })->get();
-        return view('profile', compact('user', 'itemsForSale', 'purchasedItems'));
+        return view('profile', compact('user', 'itemsForSale', 'purchasedItems', 'item'));
     }
 
     public function edit()
